@@ -59,6 +59,7 @@ class _StoryBookState extends State<StoryBook> {
           TitlePage(playSound: playSound, controller: _controller),
           Page1(playSound: playSound),
           Page2(playSound: playSound),
+          Page3(playSound: playSound),
         ],
       ),
     );
@@ -220,10 +221,66 @@ class _Page2State extends State<Page2> with SingleTickerProviderStateMixin {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: const Text(
-              "I passed the pumpkin patch — the pumpkins bounced\n"
-              "and laughed as the wind swirled the falling leaves.",
+              "As I passed the pumpkin patch\n the pumpkins bounced "
+              "and laughed\n as the wind swirled the falling leaves.",
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.orangeAccent),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// PAGE 3 - Ghostly Cemetery
+class Page3 extends StatefulWidget {
+  final Future<void> Function(String) playSound;
+  const Page3({super.key, required this.playSound});
+
+  @override
+  State<Page3> createState() => _Page3State();
+}
+
+class _Page3State extends State<Page3> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fade;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.playSound('sounds/ghost.mp3');
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+    _fade = Tween(begin: 0.0, end: 1.0).animate(_controller);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Center(child: Image.asset('assets/images/cemetery.jpg')),
+        Center(
+          child: AnimatedBuilder(
+            animation: _fade,
+            builder: (context, child) => Opacity(
+              opacity: _fade.value,
+              child: Image.asset('assets/images/ghost.webp', height: 75),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: const Text(
+              "Through the cemetery I crept.\n"
+              "Friendly ghosts drifted in and out of sight,\n"
+              "whispering softly.",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white),
             ),
           ),
         ),
