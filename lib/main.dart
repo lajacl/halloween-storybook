@@ -60,6 +60,7 @@ class _StoryBookState extends State<StoryBook> {
           Page1(playSound: playSound),
           Page2(playSound: playSound),
           Page3(playSound: playSound),
+          Page4(playSound: playSound),
         ],
       ),
     );
@@ -237,7 +238,7 @@ class _Page2State extends State<Page2> with SingleTickerProviderStateMixin {
 class Page3 extends StatefulWidget {
   final Future<void> Function(String) playSound;
   const Page3({super.key, required this.playSound});
-
+  
   @override
   State<Page3> createState() => _Page3State();
 }
@@ -267,7 +268,7 @@ class _Page3State extends State<Page3> with SingleTickerProviderStateMixin {
             animation: _fade,
             builder: (context, child) => Opacity(
               opacity: _fade.value,
-              child: Image.asset('assets/images/ghost.webp', height: 75),
+              child: Image.asset('assets/images/ghost.webp', height: 75,)
             ),
           ),
         ),
@@ -281,6 +282,55 @@ class _Page3State extends State<Page3> with SingleTickerProviderStateMixin {
               "whispering softly.",
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// PAGE 4 - The House
+class Page4 extends StatefulWidget {
+  final Future<void> Function(String) playSound;
+  const Page4({super.key, required this.playSound});
+  
+  @override
+  State<Page4> createState() => _Page4State();
+}
+
+class _Page4State extends State<Page4> {
+  bool _doorOpen = false;
+
+  void _openDoor() {
+    setState(() => _doorOpen = true);
+    widget.playSound('sounds/bats.mp3');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Center(
+          child: GestureDetector(
+            onTap: _openDoor,
+            child: AnimatedSwitcher(
+              duration: const Duration(seconds: 1),
+              child: Image.asset('assets/images/house.jpg')
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: const Text(
+              "Finally, I reached a house.\n"
+              "The door creaked open — out flew bats!\n"
+              "I filled my bag with treats.\n"
+              " Mission acomplished!",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.purpleAccent),
             ),
           ),
         ),
