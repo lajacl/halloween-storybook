@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
@@ -56,6 +58,7 @@ class _StoryBookState extends State<StoryBook> {
         children: [
           TitlePage(playSound: playSound, controller: _controller),
           Page1(playSound: playSound),
+          Page2(playSound: playSound),
         ],
       ),
     );
@@ -112,6 +115,7 @@ class TitlePage extends StatelessWidget {
 class Page1 extends StatefulWidget {
   final Future<void> Function(String) playSound;
   const Page1({super.key, required this.playSound});
+
   @override
   State<Page1> createState() => _Page1State();
 }
@@ -166,6 +170,61 @@ class _Page1State extends State<Page1> with SingleTickerProviderStateMixin {
                 style: TextStyle(color: Colors.orangeAccent),
               ),
             ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// PAGE 2 - Pumpkin Patch
+class Page2 extends StatefulWidget {
+  final Future<void> Function(String) playSound;
+  const Page2({super.key, required this.playSound});
+
+  @override
+  State<Page2> createState() => _Page2State();
+}
+
+class _Page2State extends State<Page2> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _bounce;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.playSound('sounds/wind.mp3');
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    )..repeat(reverse: true);
+    _bounce = Tween(begin: 0.0, end: 15.0).animate(_controller);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Center(child: Image.asset('assets/images/pumpkin_patch.jpg')),
+        Center(
+          child: AnimatedBuilder(
+            animation: _bounce,
+            builder: (context, child) => Transform.translate(
+              offset: Offset(0, -_bounce.value),
+              child: Image.asset('assets/images/pumpkin.png', width: 100),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: const Text(
+              "I passed the pumpkin patch — the pumpkins bounced\n"
+              "and laughed as the wind swirled the falling leaves.",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.orangeAccent),
+            ),
           ),
         ),
       ],
