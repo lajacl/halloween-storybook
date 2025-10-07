@@ -53,7 +53,10 @@ class _StoryBookState extends State<StoryBook> {
     return Scaffold(
       body: PageView(
         controller: _controller,
-        children: [TitlePage(playSound: playSound, controller: _controller)],
+        children: [
+          TitlePage(playSound: playSound, controller: _controller),
+          Page1(playSound: playSound),
+        ],
       ),
     );
   }
@@ -99,6 +102,70 @@ class TitlePage extends StatelessWidget {
           child: Text(
             'ENTER... IF YOU DARE',
             style: TextStyle(fontSize: 25, color: Colors.green),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class Page1 extends StatefulWidget {
+  final Future<void> Function(String) playSound;
+  const Page1({super.key, required this.playSound});
+  @override
+  State<Page1> createState() => _Page1State();
+}
+
+// PAGE 1 - Glowing Moon
+class _Page1State extends State<Page1> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _glow;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.playSound('sounds/wolf_howl.mp3');
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+    _glow = Tween(begin: 0.5, end: 1.0).animate(_controller);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AnimatedBuilder(
+                animation: _glow,
+                builder: (context, child) => Opacity(
+                  opacity: _glow.value,
+                  child: const Icon(
+                    Icons.circle,
+                    size: 200,
+                    color: Colors.yellow,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 40),
+              const Text(
+                "It was a crisp Halloween night,\n"
+                "and I was ready to trick or treat\n"
+                "under the glowing moonlight.",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.orangeAccent),
+              ),
+            ],
           ),
         ),
       ],
