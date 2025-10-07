@@ -10,7 +10,7 @@ class HalloweenApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "A Happily Haunted Halloween",
+      title: "Halloween Storybook",
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: Colors.black,
         textTheme: const TextTheme(bodyMedium: TextStyle(fontSize: 20)),
@@ -38,6 +38,12 @@ class _StoryBookState extends State<StoryBook> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    playSound('sounds/intro.mp3');
+  }
+
   Future<void> playSound(String asset) async {
     await _player.play(AssetSource(asset));
   }
@@ -45,9 +51,57 @@ class _StoryBookState extends State<StoryBook> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(controller: _controller, children: [
-        ],
+      body: PageView(
+        controller: _controller,
+        children: [TitlePage(playSound: playSound, controller: _controller)],
       ),
+    );
+  }
+}
+
+// TITLE PAGE
+class TitlePage extends StatelessWidget {
+  final Future<void> Function(String) playSound;
+  final PageController controller;
+
+  const TitlePage({
+    super.key,
+    required this.playSound,
+    required this.controller,
+  });
+
+  @override
+  Widget build(Object context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text(
+          "A Happily Haunted Halloween",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.orange, fontSize: 40),
+        ),
+        SizedBox(height: 50),
+        IconButton(
+          icon: Icon(Icons.menu_book),
+          iconSize: 200,
+          color: Colors.purple,
+          onPressed: () => controller.nextPage(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeIn,
+          ),
+        ),
+        SizedBox(height: 50),
+        TextButton(
+          onPressed: () => controller.nextPage(
+            duration: Duration(milliseconds: 1000),
+            curve: Curves.easeIn,
+          ),
+          child: Text(
+            'ENTER... IF YOU DARE',
+            style: TextStyle(fontSize: 25, color: Colors.green),
+          ),
+        ),
+      ],
     );
   }
 }
